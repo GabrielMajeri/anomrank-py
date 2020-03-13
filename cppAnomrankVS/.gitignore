@@ -1,0 +1,3 @@
+*.o
+/anomrank
+/darpa_anomrank.txt
