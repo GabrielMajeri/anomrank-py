@@ -3,7 +3,7 @@ from typing import NamedTuple
 
 
 class TimeEdge(NamedTuple):
-    """Stores an edge in the dynamic edge, together with it's timestamp.
+    """Stores an edge in the dynamic edge, together with its timestamp.
 
     It's important for the edges to be sorted correctly by their timestamp,
     therefore please keep the `time` field first.
@@ -15,7 +15,30 @@ class TimeEdge(NamedTuple):
 
 
 def read_data(path, step_size, max_lines=None):
-    """Reads network flow data from a file."""
+    """Reads network flow data from a file.
+
+    Parameters
+    ----------
+    path : str
+        The path of the text file to read from.
+    step_size : int
+        Distance between two consecutive timestamps choosen as snapshots.
+    max_lines : int, optional
+        Up to how many lines to read from the input file.
+        If `None` (the default), reads the whole file.
+
+    Returns
+    -------
+    num_timestamps : int
+        How many distinct timestamps were found in the input.
+    num_nodes : int
+        How many distinct network nodes were found in the input.
+    edges : list of `TimeEdge`
+        All the packets that were sent in the network,
+        ordered by their timestamp.
+    snapshots : list of `int`
+        Timestamps at which to analyse network traffic.
+    """
     edges = []
     with open(path) as fin:
         for line in islice(fin, max_lines):
@@ -54,7 +77,5 @@ def read_data(path, step_size, max_lines=None):
     # if it's not already there
     if snapshots and step != snapshots[-1]:
         snapshots.append(step)
-
-    print(len(edges))
 
     return num_timestamps, num_nodes, edges, snapshots
