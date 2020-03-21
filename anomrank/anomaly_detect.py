@@ -1,20 +1,20 @@
 import numpy as np
 
 
-def normalize_online(delta, mean, var, timestamp):
+def normalize_online(timestamp, delta, mean, var):
     """Normalizes the input data using a rolling mean.
     It modifies in place the input arrays.
 
     Parameters
     ----------
+    timestamp : double
+        A moment of time
     delta : numpy array, 4 rows, double
         The second order derivative which measure how pagerank is modifying
     mean : double
         The mean vector
     var : double
         The variance vector
-    timestamp : double
-        A moment of time
     """
 
     alpha = timestamp / (timestamp + 1)
@@ -32,25 +32,29 @@ def normalize_online(delta, mean, var, timestamp):
 
 
 def compute_first_derivative(t1, t2):
+    """Compute the first derivative using last two timestamps."""
     return t2-t1
 
 
 def compute_second_derivative(t1, t2, t3):
+    """Compute the second derivative using last three timestamps."""
     return t3 - 2*t2 + t1
 
 
 def compute_anomaly_score(timestamp, pagerank1,
                           pagerank2, mean, var):
-    """ This function looks at the pagerank and if it changes quickly it means there is an anomaly in the network
+    """This function looks at the pagerank and if it changes quickly it means there is an anomaly in the network
 
     Parameters
     ----------
     timestamp : int
         A moment of time
     pagerank1 : numpy array, double
+        Pagerank of network nodes using first algorithm
     pagerank2 : numpy array, double
+        Pagerank of network nodes using second algorithm
     mean : numpy array, double
-    var : numpy arrya, double
+    var : numpy array, double
     """
 
     delta = np.zeros((4, mean.shape[0]))
@@ -71,20 +75,20 @@ def compute_anomaly_score(timestamp, pagerank1,
         delta[3] = compute_second_derivative(
             pagerank2[t_1], pagerank2[t_2], pagerank2[t_3])
 
-    maxim = [0] * 4
-    total_max = 1.0
-
-    normalize_online(delta, mean, var, timestamp)
-
-    maxim = np.amax(np.absolute(delta), axis=-1)
-
-    total_max *= maxim
-
-    delta_abs = np.absolute(delta)
-    score_absum = np.sum(delta_abs)
+    normalize_online(timestamp, delta, mean, var)
 
     if timestamp <= 1:
         return -2000
+
+    maxim = np.zeros(4)
+    total_max = 1.0
+
+    maxim = np.amax(np.absolute(delta), axis=-1)
+
+    total_max = np.prod(maxim)
+
+    delta_abs = np.absolute(delta)
+    score_absum = np.sum(delta_abs)
 
     sub_score = score_absum * (total_max / maxim)
 
