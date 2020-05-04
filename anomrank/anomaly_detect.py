@@ -20,10 +20,17 @@ def normalize_online(timestamp, delta, mean, var):
     alpha = timestamp / (timestamp + 1)
     beta = 1 / (timestamp + 1)
 
-    mean = alpha * mean + beta * delta
-    var = alpha * var + beta * (delta * delta)
+    mean[:] = alpha * mean[:] + beta * delta[:]
+    var[:] = alpha * var[:] + beta * (delta[:] * delta[:])
+
+    print("Mean: ")
+    print(mean)
+    print("Var: ")
+    print(var)
 
     std_dev = np.sqrt(var - (mean*mean))
+
+    print(std_dev)
 
     mask = (std_dev != 0)
 
@@ -57,7 +64,7 @@ def compute_anomaly_score(timestamp, pagerank1,
     var : numpy array, double
     """
 
-    delta = np.zeros((4, mean.shape[0]))
+    delta = np.zeros((4, len(mean[0])))
 
     # Calculate the second order derivative to analyze how pagerank is modifying
 
@@ -98,3 +105,21 @@ def compute_anomaly_score(timestamp, pagerank1,
         score = -2000
 
     return score
+
+
+def testing_localy():
+    pagerank1 = np.array([[0.76133757, 0.95800655, 0.10948495, 0.16610539], [0.04689945, 0.66376899, 0.3712425, 0.71729884],
+                          [0.23790798, 0.87033685, 0.72526328, 0.06117944], [0.86800126, 0.80570202, 0.26965533, 0.03903525]], dtype=np.float64)
+
+    pagerank2 = np.array([[0.18710652, 0.61945598, 0.20482165, 0.71507528], [0.56840143, 0.15190741, 0.44738063, 0.63140366],
+                          [0.99126372, 0.39077755, 0.76775062, 0.22622011], [0.68278319, 0.21806658, 0.48163308, 0.77215408]], dtype=np.float64)
+
+    mean = np.array([[0.22724092, 0.04157759, 0.19641686, 0.8437104], [0.50581343, 0.19875327, 0.09752145, 0.08925034],
+                     [0.50488943, 0.58094689, 0.00368728, 0.0063093], [0.53095188, 0.02988576, 0.52299029, 0.48807976]], dtype=np.float64)
+
+    var = np.array([[0.50175159, 0.95379638, 0.94255591, 0.01186513], [0.77449294, 0.3350722, 0.75235295, 0.88804683],
+                    [0.39686282, 0.88822454, 0.77616695, 0.44548273], [0.15980234, 0.79107864, 0.76585466, 0.55312671]], dtype=np.float64)
+    compute_anomaly_score(1, pagerank1, pagerank2, mean, var)
+
+
+testing_localy()
