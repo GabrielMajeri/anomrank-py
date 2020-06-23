@@ -122,4 +122,4 @@ def testing_localy():
     compute_anomaly_score(1, pagerank1, pagerank2, mean, var)
 
 
-testing_localy()
+# testing_localy()
