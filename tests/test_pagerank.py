@@ -1,9 +1,13 @@
-from anomrank.pagerank import EPSILON, Node, Version, pagerank
+from anomrank.pagerank import EPSILON, Version, pagerank
+from anomrank.graph import Node, Graph
 import numpy as np
 
 
 def create_graph():
     "Creates a simple, fully connected graph"
+
+    g = Graph()
+
     a = Node()
     a.add_edge(1, 5)
     a.add_edge(2, 3)
@@ -12,13 +16,17 @@ def create_graph():
     c = Node()
     c.add_edge(0, 7)
 
-    return [a, b, c]
+    g.add_node(a)
+    g.add_node(b)
+    g.add_node(c)
+
+    return g
 
 
 def count_edges(graph):
     "Counts the total number of edges in a graph"
     num = 0
-    for node in graph:
+    for node in graph._nodes:
         num += node.edge_count
     return num
 
@@ -26,7 +34,7 @@ def count_edges(graph):
 def test_pagerank_v1():
     graph = create_graph()
     num_edges = count_edges(graph)
-    scores = pagerank(graph, num_edges, Version.V1)
+    scores = pagerank(graph._nodes, num_edges, Version.V1)
     expected = np.array([0.3589, 0.2564, 0.3846])
     np.testing.assert_allclose(scores, expected, rtol=EPSILON)
 
@@ -34,6 +42,6 @@ def test_pagerank_v1():
 def test_pagerank_v2():
     graph = create_graph()
     num_edges = count_edges(graph)
-    scores = pagerank(graph, num_edges, Version.V2)
+    scores = pagerank(graph._nodes, num_edges, Version.V2)
     expected = np.array([0.4434, 0.1697, 0.3867])
     np.testing.assert_allclose(scores, expected, rtol=EPSILON)
