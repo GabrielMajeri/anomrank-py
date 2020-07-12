@@ -53,37 +53,26 @@ class Node:
 
 
 class Graph:
-    """ A graph that holds the Nodes.
+    """ A network graph where the nodes are IP addresses and the edges are packets.
 
-    To hold the data it uses an adjaceny list.
-
+    It holds the data using an adjacency list.
     """
 
     def __init__(self):
         self._nodes = []
 
-    def print_nodes(self):
-        "Shows all the Nodes in the graph."
-        print(self._nodes)
+    def __repr__(self):
+        "Return the string representation of all the nodes."
+        return (self._nodes)
 
     def add_node(self, node):
-        "Adds the Node to the current Graph."
+        "Adds the node to the current graph."
         self._nodes.append(node)
 
-    def inject_snapshot(self, inject_num, init_ss, test_num, snapshots, inject_ss):
-
-        for _ in range(inject_num):
-            injected = init_ss + np.random.random_integers(test_num)
-
-            while injected not in inject_ss:
-                injected = init_ss + np.random.random_integers(test_num)
-
-            inject_ss.append(injected)
-
-            if injected in snapshots:
-                snapshots.append(injected)
-
-        snapshots.sort()
-        inject_ss.sort()
-
-        return snapshots, inject_ss
+    @property
+    def num_edges(self):
+        "Return the number of edges."
+        num = 0
+        for node in self._nodes:
+            num += node.edge_count
+        return num

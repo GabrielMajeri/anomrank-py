@@ -26,7 +26,7 @@ def pagerank(graph, num_edges, version):
 
     Parameters
     ----------
-    graph : list of `Node`
+    graph : Graph
         Graph for which to compute the PageRank.
     num_edges : int
         Number of edges in the graph.
@@ -38,7 +38,7 @@ def pagerank(graph, num_edges, version):
     numpy array of PageRank scores
     """
     assert isinstance(version, Version)
-    num_nodes = len(graph)
+    num_nodes = len(graph._nodes)
     # Initialize the output array
     scores = np.empty(num_nodes)
 
@@ -47,7 +47,7 @@ def pagerank(graph, num_edges, version):
             scores[i] = CONSTANT / num_nodes
     else:
         for i in range(num_nodes):
-            scores[i] = CONSTANT * graph[i].total_weight / num_edges
+            scores[i] = CONSTANT * graph._nodes[i].total_weight / num_edges
 
     prev_scores = np.copy(scores)
     score_delta = 100
@@ -58,7 +58,7 @@ def pagerank(graph, num_edges, version):
         for i in range(num_nodes):
             if prev_scores[i] == 0:
                 continue
-            node = graph[i]
+            node = graph._nodes[i]
             if node.total_weight == 0:
                 continue
 
