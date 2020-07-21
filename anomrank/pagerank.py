@@ -75,7 +75,7 @@ def pagerank(graph, num_edges, version):
         for i in range(num_nodes):
             scores[i] += new_scores[i]
 
-        score_delta += np.sum(np.absolute(new_scores[i]))
+        score_delta = np.sum(np.absolute(new_scores))
 
         prev_scores = new_scores
 
