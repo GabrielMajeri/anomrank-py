@@ -1,2 +1,8 @@
 # CPython cached bytecode
 __pycache__/
+
+# Python virtual environment
+.venv/
+
+# Built Rust files
+target/
