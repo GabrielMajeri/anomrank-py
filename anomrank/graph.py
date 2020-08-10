@@ -1,6 +1,3 @@
-import numpy as np
-
-
 class Node:
     "A node in the network graph."
 
@@ -63,7 +60,7 @@ class Graph:
 
     def __repr__(self):
         "Return the string representation of all the nodes."
-        return (self._nodes)
+        return str(self._nodes)
 
     def add_node(self, node):
         "Adds the node to the current graph."
